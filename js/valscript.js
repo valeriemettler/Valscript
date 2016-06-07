@@ -1,0 +1,101 @@
+//input string "You are (looking good) today"
+//output: (looking good)
+// no reg expressions or str replace
+
+var expression_finder = function(s) {
+
+    var str = s;
+    var str_length = s.length;
+    var right_paren;
+    var left_paren;
+    var variables = {
+        a: 2,
+        b: 4,
+        c: 5
+    };
+
+    var i = 0;
+    while (true) {
+        // loop through all characters in string, if character is a (
+        if (str[i] === "(") {
+            // get the index of the opening paren
+            left_paren = i;
+            //increment i by 1
+            i = i + 1;
+            // else if character is a )
+        } else if (str[i] === ")") {
+            //get the index of the closing paren
+            right_paren = i;
+            // return the first and last part of the string with the inner most paren
+            var expression_to_evaluate = str.substring(left_paren + 1, right_paren);
+            // send the expression to be evaluated to the operate function and store the returned result
+            var evaluated_expression = operate(expression_to_evaluate);
+            // return the concatenation of the remaining expressions with the evaluated expression
+            var result = str.substring(0, left_paren) + evaluated_expression + str.substring(right_paren + 1);
+            return result;
+        } else {
+            i = i + 1;
+        }
+
+        if (i === str_length) {
+            break;
+        }
+
+    }
+}
+
+var operate = function(s) {
+
+    // adding the operator and 2 numbers to an array
+    var arr = s.split(" ");
+
+    //turning the string numbers into integers
+    var a = parseInt(arr[1]);
+    var b = parseInt(arr[2]);
+
+    // checking the operator and performing the matching operation and returning the value to the expression finder function
+    if (arr[0] === "+") {
+        return a + b;
+    } else if (arr[0] === "-") {
+        return a - b;
+    } else if (arr[0] === "/") {
+        return a / b;
+    } else if (arr[0] === "*") {
+        return a * b;
+    } else {
+        return 0;
+    }
+}
+
+
+var test = function() {
+
+    var l = [
+        [
+            ["(+ 5 + (1 - 5))"],
+            [10]
+        ]
+    ];
+
+    // var x = expression_finder("Y (w (a (l g) h) w) t (s)");
+    // var x1 = expression_finder("Y (w (a (l (x rfrf) g) h) w) t (s)");
+    // var x1 = expression_finder("(+ 2 (+ 2 4))");
+    var expression = "(+ 2 (+ (- 10 4) (* 3 4)))";
+    console.log(expression);
+    var x1 = expression_finder(expression);
+    console.log(x1);
+
+    //loops to resend the result of the expression finder if there are still more expressions to be evaluated, else it stops
+    while (true) {
+        if (x1.indexOf("(") !== -1) {
+            x1 = expression_finder(x1);
+            console.log(x1);
+        } else {
+            console.log(x1);
+            break;
+        }
+
+    }
+
+}
+test();
